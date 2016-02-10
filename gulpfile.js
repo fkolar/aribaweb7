@@ -12,13 +12,17 @@ var inject = require('gulp-inject');
 var series = require('stream-series');
 
 
-
 var paths = {
     sass: ['./aribaweb/sass/**/*.scss'],
     sdk_lib_root: ['./tools/templates/sdk/index.html' , './aribaweb/resources/**/*' ],
     sdk_lib_js: [ 'aribaweb/**' ],
     sdk_lib_clean: ['./www/js/resources/', './www/js/sass/']
 };
+
+/**
+ * basic task to get started with SDK development. Since we need to have
+ * some way to deploy temporary the libs
+ */
 
 gulp.task('default', function (done) {
     runSequence('sass',
@@ -57,9 +61,9 @@ gulp.task('prepare-sdk', function (done) {
 gulp.task('clean-sdk-internal', function (done) {
      return gulp.src(paths.sdk_lib_clean)
         .pipe(rimraf({ force: true }))
-
-
 });
+
+
 
 gulp.task('sdk-index', function () {
 
@@ -70,6 +74,12 @@ gulp.task('sdk-index', function () {
     return gulp.src('./www/index.html')
         .pipe(inject(series(css, vendorStream, appStream))) // This will always inject vendor files before app files
         .pipe(gulp.dest('./www'));
+});
+
+
+gulp.task('clean', function (done) {
+    return gulp.src('./www')
+        .pipe(rimraf({ force: true }))
 });
 
 
